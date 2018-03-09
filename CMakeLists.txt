@@ -46,3 +46,5 @@ endif()
 
 set(MSGPACK_CXX11 ON)
 add_subdirectory(third_party/msgpack-c)
+
+add_subdirectory(tests/oamtestkit-driver)
