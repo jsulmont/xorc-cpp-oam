@@ -43,3 +43,6 @@ get_target_property(Prop cppoam COMPILE_DEFINITIONS)
 if (NOT Prop STREQUAL "Prop-NOTFOUND")
     message(STATUS "Compile definitions: ${Prop}")
 endif()
+
+set(MSGPACK_CXX11 ON)
+add_subdirectory(third_party/msgpack-c)
