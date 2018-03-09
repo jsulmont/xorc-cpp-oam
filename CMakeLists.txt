@@ -14,9 +14,6 @@ message("")
 message("cppoam")
 
 add_library(cppoam
-    include/cppoam/hello.h
-    lib/hello.cpp
-
     include/cppoam/MsgPackParser.h
     include/cppoam/ProgramRef.h
 
