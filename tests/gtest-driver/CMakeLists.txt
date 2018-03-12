@@ -11,6 +11,8 @@ enable_testing()
 
 add_executable(gtestDriver
     Driver.cpp
+
+    TestMsgPackParser.cpp
 )
 
 target_include_directories(gtestDriver PRIVATE
