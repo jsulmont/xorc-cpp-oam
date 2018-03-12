@@ -3,13 +3,13 @@
 #include <string>
 #include <vector>
 
-namespace cppoam {
+#include "Instruction.h"
 
-class Instruction {
-};
+namespace cppoam {
 
 class Function {
   friend class FunctionRef;
+  friend class MsgPackParser;
 
 private:
   std::vector<Instruction> Instructions_;
@@ -18,6 +18,9 @@ private:
 
 class Program {
   friend class ProgramRef;
+
+public:
+  Program(std::vector<std::string> ffi, std::vector<Function> functions) {}
 
 private:
   std::vector<std::string> FFI_;

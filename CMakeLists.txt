@@ -18,6 +18,10 @@ add_library(cppoam
     include/cppoam/ProgramRef.h
 
     lib/MsgPackParser.cpp
+    lib/OpCodes.h
+
+    lib/BoxedValue.h
+    lib/Instruction.h
     lib/Program.h
     lib/ProgramRef.cpp
 )
