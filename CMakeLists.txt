@@ -16,10 +16,18 @@ message("cppoam")
 add_library(cppoam
     include/cppoam/hello.h
     lib/hello.cpp
+
+    include/cppoam/MsgPackParser.h
+    include/cppoam/ProgramRef.h
+
+    lib/MsgPackParser.cpp
+    lib/Program.h
+    lib/ProgramRef.cpp
 )
 
 target_include_directories(cppoam PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/msgpack-c/include
 )
 
 target_compile_options(cppoam PUBLIC "-std=c++14")
