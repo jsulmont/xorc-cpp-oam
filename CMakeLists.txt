@@ -21,8 +21,11 @@ add_library(cppoam
     lib/OpCodes.h
 
     lib/BoxedValue.h
+    lib/BoxedValue.cpp
     lib/Instruction.h
+    lib/Instruction.cpp
     lib/Program.h
+    lib/Program.cpp
     lib/ProgramRef.cpp
 )
 

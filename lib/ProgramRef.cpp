@@ -1,4 +1,6 @@
 #include "cppoam/ProgramRef.h"
+
+#include "Instruction.h"
 #include "Program.h"
 
 #include <memory>
@@ -29,7 +31,8 @@ size_t FunctionRef::getNumInstructions() const {
 }
 
 InstructionRef FunctionRef::getInstruction(unsigned idx) const {
-  return InstructionRef(Function_.Instructions_.at(idx));
+  Instruction *instr = Function_.Instructions_.at(idx).get();
+  return InstructionRef(*instr); // pass reference
 }
 
 }

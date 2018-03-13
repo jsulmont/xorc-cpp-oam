@@ -1,6 +1,7 @@
 #include "cppoam/MsgPackParser.h"
 
 #include "BoxedValue.h"
+#include "Instruction.h"
 #include "OpCodes.h"
 #include "Program.h"
 
@@ -161,18 +162,18 @@ MsgPackParser::FunctionSpec MsgPackParser::parseFunctionHeader(
 Function MsgPackParser::parseFunctionBody(FunctionSpec spec,
                                           msgpack::object *pos) {
   unsigned advance;
-  Function result;
+  std::vector<std::unique_ptr<Instruction>> instructions;
 
   for (int i = 0; i < spec.Instructions; i++) {
-    result.Instructions_.push_back(parseInstruction(pos, advance));
+    instructions.push_back(parseInstruction(pos, advance));
     pos += advance;
   }
 
-  return result;
+  return Function(spec.Variables, std::move(instructions));
 }
 
-Instruction MsgPackParser::parseInstruction(msgpack::object *pos,
-                                            unsigned &advance) {
+std::unique_ptr<Instruction> MsgPackParser::parseInstruction(
+    msgpack::object *pos, unsigned &advance) {
   if (pos[0].type != msgpack::type::POSITIVE_INTEGER)
     throw std::runtime_error("Invalid format: expected opcode");
 
@@ -184,7 +185,7 @@ Instruction MsgPackParser::parseInstruction(msgpack::object *pos,
       advance += 2;
       auto left = pos[1].as<unsigned>();
       auto right = pos[2].as<unsigned>();
-      return ParallelInstruction(left, right);
+      return std::make_unique<ParallelInstruction>(left, right);
     }
 
     case OpPruning: {
@@ -192,7 +193,7 @@ Instruction MsgPackParser::parseInstruction(msgpack::object *pos,
       auto left = pos[1].as<unsigned>();
       auto index = pos[2].as<int>(); // -1 == none
       auto right = pos[3].as<unsigned>();
-      return PruningInstruction(left, index, right);
+      return std::make_unique<PruningInstruction>(left, index, right);
     }
 
     case OpCall: {
@@ -200,7 +201,7 @@ Instruction MsgPackParser::parseInstruction(msgpack::object *pos,
       auto type = pos[1].as<unsigned>(); // 0 == TFun, 1 == TDynamic
       auto index = pos[2].as<int>(); // -1 == none ?
       auto args = parseCallArgs(pos[3]);
-      return CallInstruction(type, index, args);
+      return std::make_unique<CallInstruction>(type, index, args);
     }
 
     case OpTailCall: {
@@ -208,20 +209,20 @@ Instruction MsgPackParser::parseInstruction(msgpack::object *pos,
       auto type = pos[1].as<unsigned>(); // 0 == TFun, 1 == TDynamic
       auto index = pos[2].as<int>(); // -1 == none ?
       auto args = parseCallArgs(pos[3]);
-      return TailCallInstruction(type, index, args);
+      return std::make_unique<TailCallInstruction>(type, index, args);
     }
 
     case OpConst: {
       advance += 1;
       BoxedValue data = parseBoxedValue(pos[1]);
-      return ConstInstruction(data);
+      return std::make_unique<ConstInstruction>(data);
     }
 
     case OpFFI: {
       advance += 2;
       auto index = pos[1].as<int>();
       auto args = parseCallArgs(pos[2]);
-      return FFICallInstruction(index, args);
+      return std::make_unique<FFICallInstruction>(index, args);
     }
 
     case OpOtherwise:
@@ -237,13 +238,33 @@ Instruction MsgPackParser::parseInstruction(msgpack::object *pos,
 }
 
 BoxedValue MsgPackParser::parseBoxedValue(const msgpack::object &o) {
-  // TODO
-  return BoxedValue();
+  switch (o.type) {
+    case msgpack::type::POSITIVE_INTEGER:
+      return BoxedValue::createInt(o.via.u64);
+
+    case msgpack::type::NEGATIVE_INTEGER:
+      return BoxedValue::createInt(o.via.i64);
+
+    default:
+      throw std::runtime_error("Not yet implemented");
+  }
 }
 
 std::vector<int> MsgPackParser::parseCallArgs(const msgpack::object &o) {
-  // TODO
-  return {};
+  if (o.type != msgpack::type::ARRAY)
+    throw std::runtime_error("Invalid format: expected array of arguments");
+
+  auto numArgs = o.via.array.size;
+  msgpack::object *arr = o.via.array.ptr;
+
+  std::vector<int> args;
+  args.reserve(numArgs);
+
+  for (int i = 0; i < numArgs; i++) {
+    args.push_back(arr[i].as<int>());
+  }
+
+  return args;
 }
 
 }

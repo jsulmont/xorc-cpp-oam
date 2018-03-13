@@ -5,7 +5,7 @@
 
 #include <msgpack.hpp>
 
-#include "ProgramRef.h"
+#include "cppoam/ProgramRef.h"
 
 namespace cppoam {
 
@@ -40,7 +40,7 @@ private:
   FunctionSpec parseFunctionHeader(msgpack::object *arr, unsigned &advance);
   Function parseFunctionBody(FunctionSpec spec, msgpack::object *body);
 
-  Instruction parseInstruction(msgpack::object *bytes, unsigned &advance);
+  std::unique_ptr<Instruction> parseInstruction(msgpack::object *pos, unsigned &advance);
   std::vector<int> parseCallArgs(const msgpack::object &o);
   BoxedValue parseBoxedValue(const msgpack::object &o);
 };

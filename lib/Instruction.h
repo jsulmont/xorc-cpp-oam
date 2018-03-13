@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <string>
 #include <vector>
 
@@ -7,7 +8,22 @@
 
 namespace cppoam {
 
+class Function;
+class NOPInstruction;
+
 class Instruction {
+public:
+  void setOwnerFunction(Function *ownerFunction) {
+    assert(OwnerFunction_ == nullptr);
+    assert(ownerFunction != nullptr);
+    OwnerFunction_ = ownerFunction;
+  }
+
+  static NOPInstruction Invalid;
+
+private:
+  Function *OwnerFunction_ = nullptr;
+
 };
 
 class ParallelInstruction : public Instruction {
@@ -44,6 +60,11 @@ class FFICallInstruction : public Instruction {
 public:
   FFICallInstruction(int index, std::vector<int> args) {
   }
+};
+
+class NOPInstruction : public Instruction {
+public:
+  NOPInstruction() = default;
 };
 
 }
