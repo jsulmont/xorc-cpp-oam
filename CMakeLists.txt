@@ -14,11 +14,15 @@ message("")
 message("cppoam")
 
 add_library(cppoam
+    include/cppoam/Interpreter.h
     include/cppoam/MsgPackParser.h
     include/cppoam/ProgramRef.h
+    include/cppoam/StateRef.h
 
+    lib/Interpreter.cpp
     lib/MsgPackParser.cpp
-    lib/OpCodes.h
+    lib/ProgramRef.cpp
+    lib/StateRef.cpp
 
     lib/BoxedValue.h
     lib/BoxedValue.cpp
@@ -26,7 +30,8 @@ add_library(cppoam
     lib/Instruction.cpp
     lib/Program.h
     lib/Program.cpp
-    lib/ProgramRef.cpp
+
+    lib/OpCodes.h
 )
 
 target_include_directories(cppoam PUBLIC

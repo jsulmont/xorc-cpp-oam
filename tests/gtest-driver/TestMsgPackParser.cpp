@@ -1,6 +1,9 @@
 #include <cppoam/MsgPackParser.h>
 #include <cppoam/ProgramRef.h>
 
+#include <cppoam/Interpreter.h>
+#include <cppoam/StateRef.h>
+
 #include <gtest/gtest.h>
 
 TEST(TestMsgPackParser, Parse_1plus2)
@@ -133,4 +136,14 @@ TEST(TestMsgPackParser, Evaluate_1parallel2)
   EXPECT_EQ(0, program.getNumFFI());
   EXPECT_EQ(1, program.getNumFunctions());
   EXPECT_EQ(3, program.getFunction(0).getNumInstructions());
+
+  cppoam::Interpreter interpreter;
+  cppoam::StateRef state = interpreter.run(program);
+  EXPECT_TRUE(state.isDone());
+  EXPECT_EQ(2, state.getNumResults());
+
+  for (int i = 0; i < state.getNumResults(); i++) {
+    int res = state.getIntResult(i);
+    EXPECT_TRUE(res == 1 || res == 2);
+  }
 }
