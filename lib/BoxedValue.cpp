@@ -9,5 +9,4 @@ BoxedValue BoxedValue::createInt(int val) {
   v.Data_->Int_ = val;
   return v;
 }
-
 }

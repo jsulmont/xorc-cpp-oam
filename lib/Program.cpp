@@ -9,7 +9,8 @@ Function Function::Invalid;
 Program Program::Invalid;
 
 Program::Program(std::vector<std::string> ffi, std::vector<Function> functions)
-    : FFI_(std::move(ffi)), Functions_(std::move(functions)) {
+    : FFI_(std::move(ffi))
+    , Functions_(std::move(functions)) {
   for (Function &f : Functions_) {
     f.OwnerProgram_ = this;
     for (std::unique_ptr<Instruction> &i : f.Instructions_) {
@@ -42,6 +43,6 @@ const Instruction &Function::getFirstInstruction() const {
 Function::Function(unsigned numVariables,
                    std::vector<std::unique_ptr<Instruction>> instructions)
     : Instructions_(std::move(instructions))
-    , NumVariables_(numVariables) {}
-
+    , NumVariables_(numVariables) {
+}
 }

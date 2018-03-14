@@ -23,7 +23,6 @@ public:
 
 private:
   Function *OwnerFunction_ = nullptr;
-
 };
 
 class ParallelInstruction : public Instruction {
@@ -66,5 +65,4 @@ class NOPInstruction : public Instruction {
 public:
   NOPInstruction() = default;
 };
-
 }

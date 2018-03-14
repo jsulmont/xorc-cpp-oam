@@ -8,7 +8,8 @@
 namespace cppoam {
 
 ProgramRef::ProgramRef(std::unique_ptr<Program> p)
-  : Program_(std::move(p)) {}
+    : Program_(std::move(p)) {
+}
 
 size_t ProgramRef::getNumFFI() const {
   return Program_->FFI_.size();
@@ -34,5 +35,4 @@ InstructionRef FunctionRef::getInstruction(unsigned idx) const {
   Instruction *instr = Function_.Instructions_.at(idx).get();
   return InstructionRef(*instr); // pass reference
 }
-
 }

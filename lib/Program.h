@@ -27,7 +27,8 @@ private:
   Program *OwnerProgram_;
 
   // Private ctor for Invalid function
-  Function() {}
+  Function() {
+  }
 
   friend class Program;
   friend class Instruction;
@@ -49,9 +50,9 @@ private:
   std::vector<Function> Functions_;
 
   // Private ctor for Invalid program
-  Program() {}
+  Program() {
+  }
 
   friend class ProgramRef;
 };
-
 }

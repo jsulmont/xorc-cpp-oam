@@ -23,7 +23,8 @@ nullptr_t unreachable(std::string msg) {
 }
 
 MsgPackParser::MsgPackParser(msgpack::object_handle h)
-  : MessageHandle_(std::move(h)) {}
+    : MessageHandle_(std::move(h)) {
+}
 
 MsgPackParser::MessageType_t MsgPackParser::parseMessageType() {
   const msgpack::object &obj = MessageHandle_.get();
@@ -64,14 +65,11 @@ ProgramRef MsgPackParser::parseProgram() {
     // Return owning pointer to instance
     std::unique_ptr<Program> p = parseProgramBody(body);
     return ProgramRef(std::move(p));
-  }
-  catch (std::runtime_error ex) {
+  } catch (std::runtime_error ex) {
     error(std::string("Caught own exception: ") + ex.what());
-  }
-  catch (std::exception ex) {
+  } catch (std::exception ex) {
     error(std::string("Caught 3rd-party exception: ") + ex.what());
-  }
-  catch (...) {
+  } catch (...) {
     error("Caught undefined thingy");
   }
 
@@ -159,8 +157,7 @@ MsgPackParser::FunctionSpec MsgPackParser::parseFunctionHeader(
   return FunctionSpec{variables, instructions};
 }
 
-Function MsgPackParser::parseFunctionBody(FunctionSpec spec,
-                                          msgpack::object *pos) {
+Function MsgPackParser::parseFunctionBody(FunctionSpec spec, msgpack::object *pos) {
   unsigned advance;
   std::vector<std::unique_ptr<Instruction>> instructions;
 
@@ -172,8 +169,8 @@ Function MsgPackParser::parseFunctionBody(FunctionSpec spec,
   return Function(spec.Variables, std::move(instructions));
 }
 
-std::unique_ptr<Instruction> MsgPackParser::parseInstruction(
-    msgpack::object *pos, unsigned &advance) {
+std::unique_ptr<Instruction> MsgPackParser::parseInstruction(msgpack::object *pos,
+                                                             unsigned &advance) {
   if (pos[0].type != msgpack::type::POSITIVE_INTEGER)
     throw std::runtime_error("Invalid format: expected opcode");
 
@@ -199,7 +196,7 @@ std::unique_ptr<Instruction> MsgPackParser::parseInstruction(
     case OpCall: {
       advance += 3;
       auto type = pos[1].as<unsigned>(); // 0 == TFun, 1 == TDynamic
-      auto index = pos[2].as<int>(); // -1 == none ?
+      auto index = pos[2].as<int>();     // -1 == none ?
       auto args = parseCallArgs(pos[3]);
       return std::make_unique<CallInstruction>(type, index, args);
     }
@@ -207,7 +204,7 @@ std::unique_ptr<Instruction> MsgPackParser::parseInstruction(
     case OpTailCall: {
       advance += 3;
       auto type = pos[1].as<unsigned>(); // 0 == TFun, 1 == TDynamic
-      auto index = pos[2].as<int>(); // -1 == none ?
+      auto index = pos[2].as<int>();     // -1 == none ?
       auto args = parseCallArgs(pos[3]);
       return std::make_unique<TailCallInstruction>(type, index, args);
     }
@@ -230,8 +227,7 @@ std::unique_ptr<Instruction> MsgPackParser::parseInstruction(
     case OpCoeffect:
     case OpStop:
     case OpClosure:
-    case OpLabel:
-      throw std::runtime_error("Not yet implemented");
+    case OpLabel: throw std::runtime_error("Not yet implemented");
   }
 
   throw std::runtime_error("Invalid format: unrecognized opcode");
@@ -245,8 +241,7 @@ BoxedValue MsgPackParser::parseBoxedValue(const msgpack::object &o) {
     case msgpack::type::NEGATIVE_INTEGER:
       return BoxedValue::createInt(o.via.i64);
 
-    default:
-      throw std::runtime_error("Not yet implemented");
+    default: throw std::runtime_error("Not yet implemented");
   }
 }
 
@@ -266,5 +261,4 @@ std::vector<int> MsgPackParser::parseCallArgs(const msgpack::object &o) {
 
   return args;
 }
-
 }

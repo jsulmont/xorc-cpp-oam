@@ -16,5 +16,4 @@ enum OpCodes {
   OpLabel = 10,
   OpFFI = 11
 };
-
 }

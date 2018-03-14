@@ -6,5 +6,4 @@
 namespace cppoam {
 
 NOPInstruction Instruction::Invalid;
-
 }

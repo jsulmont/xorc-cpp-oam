@@ -6,9 +6,7 @@ namespace cppoam {
 
 class BoxedValue {
 public:
-  enum Types_t {
-    Int
-  };
+  enum Types_t { Int };
 
   static BoxedValue createInt(int val);
 
@@ -20,5 +18,4 @@ private:
 
   std::shared_ptr<Data_t> Data_;
 };
-
 }
