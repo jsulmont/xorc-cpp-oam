@@ -57,6 +57,9 @@ if (NOT Prop STREQUAL "Prop-NOTFOUND")
 endif()
 
 set(MSGPACK_CXX11 ON)
+set(MSGPACK_BUILD_TESTS OFF)
+set(MSGPACK_BUILD_EXAMPLES OFF)
+set(MSGPACK_ENABLE_SHARED OFF)
 add_subdirectory(third_party/msgpack-c)
 
 add_subdirectory(tests/oamtestkit-driver)
